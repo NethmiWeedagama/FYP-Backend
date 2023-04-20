@@ -25,8 +25,8 @@ app = Flask(__name__)
 #     'model1': tf.keras.models.load_model("D://University/IIT/level 6/FYP/BackendFyp/model/priority model.h5"),
 #     'model2': tf.keras.models.load_model("D://University/IIT/level 6/FYP/BackendFyp/model/modelSeverity3SmotENN.h5")
 # }
-model_1 = load_model("D://University/IIT/level 6/FYP IMPLEMENTATION/FYP-BACKEND/model/priority model.h5")
-model_2 = load_model("D://University/IIT/level 6/FYP IMPLEMENTATION/FYP-BACKEND/model/modelSeverity3SmotENN.h5")
+model_1 = load_model("./model/priority model.h5")
+model_2 = load_model("./model/modelSeverity3SmotENN.h5")
 
 # Set up MySQL connection
 app.config['MYSQL_HOST'] = 'localhost'
