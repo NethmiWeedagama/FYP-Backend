@@ -4,15 +4,11 @@ from flask_mail import Mail, Message
 import re
 import preprocessing
 import numpy as np
-from werkzeug.security import generate_password_hash
-from flask import Flask, session, request, jsonify
-# from flask_login import LoginManager, login_user, logout_user, UserMixin
-# from flask_mysqldb import MySQL
+
 from flask import Flask, request, jsonify, redirect, url_for
 from flask_login import LoginManager, login_user, logout_user, login_required, UserMixin
 from flask_mysqldb import MySQL
-from werkzeug.security import generate_password_hash, check_password_hash
-from flask import Flask, session
+
 from flask import Flask, session
 from flask_session import Session
 from werkzeug.security import generate_password_hash
@@ -21,12 +17,9 @@ from keras.models import load_model
 from flask_login import login_required
 import redis
 app = Flask(__name__)
-# app.config['MODELS'] = {
-#     'model1': tf.keras.models.load_model("D://University/IIT/level 6/FYP/BackendFyp/model/priority model.h5"),
-#     'model2': tf.keras.models.load_model("D://University/IIT/level 6/FYP/BackendFyp/model/modelSeverity3SmotENN.h5")
-# }
-model_1 = load_model("./model/priority model.h5")
-model_2 = load_model("./model/modelSeverity3SmotENN.h5")
+
+model_1 = load_model("./model/priority_model.h5")
+model_2 = load_model("model/Severity_Model.h5")
 
 # Set up MySQL connection
 app.config['MYSQL_HOST'] = 'localhost'
@@ -67,7 +60,7 @@ detailList=[]
 
 
 def priorityPredictions(input_data):
-    # priority = model_1.predict(input_data, axis=-1)
+
     # Predict the class using the pre-loaded model
     y_pred = model_1.predict(input_data)
 
@@ -76,8 +69,7 @@ def priorityPredictions(input_data):
 
     # Return the predicted class
     return y_pred_priority_class
-    # print(priority)
-    # return priority
+
 
 def severityPredictions(input_data):
 
@@ -135,11 +127,17 @@ def signup():
     print(username)
     print(password)
     if not email or not username or not password:
-        return jsonify({'error': 'All fields are required'}), 400
-
+        return jsonify({'error': 'All fields are required'}), 201
+        # Check if the username already exists
+    cur = mysql.connection.cursor()
+    cur.execute('SELECT * FROM users WHERE username = %s', (username,))
+    existing_user = cur.fetchone()
+    if existing_user:
+        print('Username already exists')
+        return jsonify({'error': 'Username already exists'}),201
     hashed_password = generate_password_hash(password)
 
-    cur = mysql.connection.cursor()
+
     cur.execute('INSERT INTO users (email, username, password) VALUES (%s, %s, %s)',
                 (email, username, hashed_password))
     mysql.connection.commit()
@@ -155,15 +153,18 @@ def delete_profile():
     print(username)
     if 'username' == "":
         return jsonify({'error': 'Username not provided'})
-
+    try:
     # user_id = session['user']['id']
-    cur = mysql.connection.cursor()
-    cur.execute('DELETE FROM users WHERE username = %s', (username,))
-    mysql.connection.commit()
-    cur.close()
-    session.clear()
-    # session.pop('user', None)
-    return jsonify({'message': 'Profile deleted successfully'})
+        cur = mysql.connection.cursor()
+        cur.execute('DELETE FROM users WHERE username = %s', (username,))
+        mysql.connection.commit()
+        cur.close()
+        session.clear()
+        # session.pop('user', None)
+        return jsonify({'message': 'Profile deleted successfully'})
+    except Exception as e:
+        
+        return (jsonify({'message': 'Invalid Username'}))
 
 
 
@@ -172,14 +173,14 @@ def send():
     if request.method == "POST":
         title = str(request.json["title"])
         description = str(request.json["description"])
-        # print("title")
+
         cleanDescription= preprocessing.preprocess_text(description)
         print(cleanDescription)
         emotionScore=preprocessing.sentiment_scores(cleanDescription)
-        # print(emotionScore)
+
         scores=emotionScore
         sentiment_scores = [[scores['pos'],scores['neg'], scores['neu'] ]]
-        print(sentiment_scores)
+
         try:
 
             # loadedModel=preprocessing.loadmodel()
@@ -219,31 +220,8 @@ def send():
     else:
         return(jsonify({'message': 'Error .Please try again'}))
 
-@app.route('/')
-def hello_world():  # put application's code here
-    return 'Hello World!'
 
-@app.route("/mail", methods=['POST'])
-def sendMail():
 
-    # detailList.clear()
-    # details = request.get_json(['details'])
-    # detailList.append(details)
-    # emailAddress = detailList[0]["mail"]
-    # name = detailList[0]["name"]
-    name = str(request.json["name"])
-    emailAddress = str(request.json["email"])
-    message = str(request.json["message"])
-
-    regex = '^(\w|\.|\_|\-)+[@](\w|\_|\-|\.)+[.]\w{2,3}$'
-    if (re.search(regex, emailAddress)):
-        msg = Message('Working with Us', sender='sbugclassifier@gmail.com', recipients=[emailAddress])
-        msg.body = "Hello "+name+"!! Thankyou for contacting us.We will look into your message and contact you within 3-4 business days"
-        mail.send(msg)
-        status = 1
-    else:
-        status = 0
-    return jsonify(status)
 
 
 

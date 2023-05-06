@@ -74,13 +74,13 @@ def sentiment_scores(sentence):
 # def loadmodel():
 #     # try:
 #     #     zip_file_path = "D://University/IIT/level 6/FYP IMPLEMENTATION/FYP-BACKEND/model/priority model.zip"
-#     #     model_file_name = 'priority model.h5'
+#     #     model_file_name = 'priority_model.h5'
 #     #
 #     #     # Extract the model file from the zip file
 #     #     with zipfile.ZipFile(zip_file_path, 'r') as zip_ref:
 #     #         zip_ref.extract(model_file_name)
 #
-#         loaded_model = load_model("D://University/IIT/level 6/FYP/BackendFyp/model/priority model.h5")
+#         loaded_model = load_model("D://University/IIT/level 6/FYP/BackendFyp/model/priority_model.h5")
 #         # loaded_model = load_model(model_file_name)
 #         return loaded_model
 #     # except Exception as e:
@@ -90,13 +90,13 @@ def sentiment_scores(sentence):
 # def loadmodelSeverity():
 #
 #     # zip_file_path = "D://University/IIT/level 6/FYP IMPLEMENTATION/FYP-BACKEND/model/modelSeverity3SmotENN.zip"
-#     # model_file_name = 'modelSeverity3SmotENN.h5'
+#     # model_file_name = 'Severity_Model.h5'
 #     #
 #     # # Extract the model file from the zip file
 #     # with zipfile.ZipFile(zip_file_path, 'r') as zip_ref:
 #     #     zip_ref.extract(model_file_name)
 #     #
-#     # # loaded_model = load_model("D://University/IIT/level 6/FYP/BackendFyp/model/priority model.h5")
+#     # # loaded_model = load_model("D://University/IIT/level 6/FYP/BackendFyp/model/priority_model.h5")
 #     # loaded_modelSeverity = load_model(model_file_name)
-#     loaded_modelSeverity = load_model("D://University/IIT/level 6/FYP/BackendFyp/model/modelSeverity3SmotENN.h5")
+#     loaded_modelSeverity = load_model("D://University/IIT/level 6/FYP/BackendFyp/model/Severity_Model.h5")
 #     return loaded_modelSeverity
